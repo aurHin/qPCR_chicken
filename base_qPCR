@@ -12,7 +12,7 @@ GenesToPlot<-c("Hoxd8","Hoxd9","Hoxd10","Hoxd11")
 toPlot<-subset(TOI,TOI$Target %in% GenesToPlot)
 toPlot$Target<-droplevels(toPlot$Target)
 toPlot$Target<-factor(toPlot$Target, levels = GenesToPlot)
-#toPlot<-subset(toPlot,toPlot$BioRep!=2)
+toPlot<-subset(toPlot,toPlot$BioRep!=2)
 View(toPlot)
 
 GraphName<-"/Users/Hintermann/Desktop/LAB/SynologyDrive/qPCR/qPCR_chicken_newAnalysis/MN/100517_Kidney_plate7_Kidneys_HH33_CEgapdh.png"
