@@ -1,0 +1,22 @@
+#install.packages("Hmisc")
+library(ggplot2) 
+library(Hmisc)
+TOI<-read.csv("/Users/Hintermann/Desktop/LAB/SynologyDrive/qPCR/qPCR_chicken_newAnalysis/MN/100517_Kidney_plate7_Kidneys_HH33.csv", header=T,na.strings = "NA")
+HK_mean<-mean(TOI$Cq[TOI$Target=="gapdh"])
+TOI$Ct2<-2^(HK_mean-TOI$Cq)
+TOI$CtE<-TOI$E^(HK_mean-TOI$Cq)
+
+View(TOI)
+
+GenesToPlot<-c("Hoxd8","Hoxd9","Hoxd10","Hoxd11")
+toPlot<-subset(TOI,TOI$Target %in% GenesToPlot)
+toPlot$Target<-droplevels(toPlot$Target)
+toPlot$Target<-factor(toPlot$Target, levels = GenesToPlot)
+toPlot<-subset(toPlot,toPlot$BioRep!=2)
+View(toPlot)
+
+GraphName<-"/Users/Hintermann/Desktop/LAB/SynologyDrive/qPCR/qPCR_chicken_newAnalysis/MN/100517_Kidney_plate7_Kidneys_HH33_CEgapdh.png"
+yAx<-"E^[Ct(gapdh)-Ct]"
+GraphTitle<-"MN_HH33"
+p<-ggplot(toPlot,mapping = aes(toPlot$Target,toPlot$CtE))+geom_point(aes(colour=as.character(toPlot$TecRec),shape=as.character(toPlot$BioRep)),size=3.5)
+p+labs(colour="TecRep",shape="BioRep",x="",y=yAx,title=GraphTitle)+stat_summary(fun.y="mean",geom="point",size=1)+stat_summary(fun.data=mean_sdl,fun.args = list(mult=1),geom="pointrange")+ggsave(GraphName,dpi=300)
